@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Scheme Copilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/app.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
+    <nav class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="/" class="flex items-center space-x-2">
+                    <span class="text-blue-600 text-2xl font-bold">Copilot</span>
+                    <span class="text-gray-700 font-medium">for Entrepreneurs</span>
+                </a>
+                <div id="nav-auth"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Entrepreneur Dashboard</h1>
+                <p class="text-gray-500 text-sm mt-1">Manage your profiles, saved schemes, and application progress</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="/recommendations.html" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition">
+                    ⚡ Rerun Recommendations
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Status Cards & Quick Profile Links -->
+            <div class="space-y-6">
+                <!-- User Welcome & Completion -->
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-6 rounded-2xl shadow-lg">
+                    <div class="text-xs uppercase font-bold text-blue-200 tracking-wider mb-1">Account Overview</div>
+                    <div id="userEmailText" class="text-lg font-bold truncate">Loading user...</div>
+                    
+                    <div class="mt-6 pt-6 border-t border-white/20 space-y-3">
+                        <div class="flex justify-between items-center text-sm">
+                            <span>Entrepreneur Profile</span>
+                            <span id="profileStatusBadge" class="bg-white/20 text-white px-2.5 py-0.5 rounded text-xs font-semibold">Checking...</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span>Business Profile</span>
+                            <span id="businessStatusBadge" class="bg-white/20 text-white px-2.5 py-0.5 rounded text-xs font-semibold">Checking...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Profile Actions -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 space-y-3">
+                    <h3 class="font-bold text-gray-900 text-base">Profile Management</h3>
+                    <a href="/profile.html" class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 transition">
+                        ✎ Edit Entrepreneur Profile
+                    </a>
+                    <a href="/business.html" class="block w-full text-center bg-gray-50 hover:bg-gray-100 text-gray-700 py-2.5 rounded-xl text-sm font-semibold border border-gray-200 transition">
+                        ✎ Edit Business Requirements
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column: Saved Schemes List -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-md border border-gray-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-900">Saved Schemes & Roadmaps</h2>
+                        <span id="savedCountBadge" class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full">0 Saved</span>
+                    </div>
+
+                    <div id="savedSchemesContainer" class="space-y-4">
+                        <div class="animate-pulse text-gray-400 py-6 text-center text-sm">Loading saved schemes...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!Auth.isLoggedIn()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            // Get Current User Info
+            try {
+                const userRes = await fetch('/api/auth/me', { headers: Auth.getHeaders() });
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    document.getElementById('userEmailText').innerText = userData.email;
+                }
+            } catch (e) {}
+
+            // Check Profiles Status
+            try {
+                const pRes = await fetch('/api/profile', { headers: Auth.getHeaders() });
+                document.getElementById('profileStatusBadge').innerHTML = pRes.ok ? '✓ Completed' : 'Pending';
+                if (pRes.ok) document.getElementById('profileStatusBadge').className = 'bg-emerald-500/30 text-emerald-100 px-2.5 py-0.5 rounded text-xs font-semibold';
+            } catch (e) {}
+
+            try {
+                const bRes = await fetch('/api/business', { headers: Auth.getHeaders() });
+                document.getElementById('businessStatusBadge').innerHTML = bRes.ok ? '✓ Completed' : 'Pending';
+                if (bRes.ok) document.getElementById('businessStatusBadge').className = 'bg-emerald-500/30 text-emerald-100 px-2.5 py-0.5 rounded text-xs font-semibold';
+            } catch (e) {}
+
+            // Fetch Saved Schemes
+            try {
+                const savedRes = await fetch('/api/saved-schemes', { headers: Auth.getHeaders() });
+                if (savedRes.ok) {
+                    const savedList = await savedRes.json();
+                    renderSavedSchemes(savedList);
+                }
+            } catch (e) {}
+        }
+
+        function renderSavedSchemes(savedList) {
+            const container = document.getElementById('savedSchemesContainer');
+            document.getElementById('savedCountBadge').innerText = `${savedList.length} Saved`;
+
+            if (savedList.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                        <p class="text-gray-500 text-sm">You haven't saved any schemes yet.</p>
+                        <a href="/recommendations.html" class="inline-block mt-3 text-blue-600 font-semibold text-xs hover:underline">Browse Recommendations →</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = savedList.map(item => {
+                const scheme = item.scheme;
+                return `
+                    <div class="p-5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white hover:shadow-md transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${scheme.ministry}</span>
+                            <h3 class="font-bold text-gray-900 text-base mt-1">
+                                <a href="/scheme.html?id=${scheme.id}" class="hover:text-blue-600 transition">${scheme.name}</a>
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5 line-clamp-1">${scheme.benefits}</p>
+                        </div>
+
+                        <div class="flex gap-2">
+                            <a href="/roadmap.html?scheme_id=${scheme.id}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs transition shadow-sm">
+                                View Roadmap →
+                            </a>
+                            <button onclick="removeSaved(${scheme.id})" class="text-red-600 hover:bg-red-50 p-2 rounded-lg text-xs transition">
+                                🗑 Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function removeSaved(schemeId) {
+            try {
+                const res = await fetch(`/api/schemes/${schemeId}/save`, {
+                    method: 'DELETE',
+                    headers: Auth.getHeaders()
+                });
+                if (res.ok) {
+                    showToast('Scheme removed', 'info');
+                    loadDashboardData();
+                }
+            } catch (e) {
+                showToast('Failed to remove scheme', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

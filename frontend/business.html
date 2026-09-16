@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2 & 3: Business Requirements & AI Analysis - Scheme Copilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/app.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col justify-between">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-slate-200/80 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="/" class="flex items-center space-x-2">
+                    <span class="text-blue-600 text-2xl font-bold">Copilot</span>
+                    <span class="text-slate-700 font-medium">for Entrepreneurs</span>
+                </a>
+                <div id="nav-auth"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Visual Multi-Step Wizard Progress Header -->
+    <div class="bg-white border-b border-slate-200 py-4 shadow-inner">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex justify-between items-center text-xs sm:text-sm">
+                <!-- Completed Step 1 -->
+                <div class="flex items-center text-emerald-600 font-bold space-x-2">
+                    <span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs">✓</span>
+                    <span>Entrepreneur Profile</span>
+                </div>
+
+                <div class="h-0.5 bg-blue-600 flex-1 mx-4"></div>
+
+                <!-- Active Step 2 -->
+                <div class="flex items-center text-blue-600 font-bold space-x-2">
+                    <span class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-500/30">2</span>
+                    <span>Business & Requirements</span>
+                </div>
+
+                <div class="h-0.5 bg-slate-200 flex-1 mx-4"></div>
+
+                <!-- Step 3 -->
+                <div class="flex items-center text-slate-400 font-medium space-x-2">
+                    <span class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">3</span>
+                    <span>AI Scheme Matching</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container -->
+    <main class="max-w-4xl mx-auto px-4 py-10 w-full space-y-8">
+        <!-- Natural Language AI Assistant Card -->
+        <div class="bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 text-white p-8 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-blue-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="flex items-center justify-between mb-4">
+                <span class="px-3.5 py-1 bg-blue-500/30 text-blue-200 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-400/30">AI Business Assistant</span>
+                <button type="button" onclick="fillExamplePrompt()" class="text-xs text-indigo-300 hover:text-white font-semibold underline transition">
+                    ✨ Insert Example Requirement
+                </button>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-extrabold mb-2 tracking-tight">Describe Your Business Requirement</h2>
+            <p class="text-indigo-200 text-sm mb-6">
+                Tell us about your business idea in plain language. Our AI will automatically extract your industry, funding requirement, and machinery needs.
+            </p>
+
+            <div class="space-y-4">
+                <textarea id="aiTextPrompt" rows="3"
+                          placeholder="Example: I want to start a small food processing unit in Uttar Pradesh and need around ₹5 lakh for machinery."
+                          class="w-full px-4 py-3.5 rounded-2xl bg-white/10 text-white placeholder-indigo-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm leading-relaxed"></textarea>
+
+                <div class="flex justify-start">
+                    <button type="button" onclick="runAIAnalysis()" id="aiExtractBtn"
+                            class="bg-blue-500 hover:bg-blue-400 text-white font-bold px-6 py-2.5 rounded-xl transition duration-200 shadow-lg text-xs uppercase tracking-wider flex items-center space-x-2">
+                        <span>⚡ Extract & Auto-Fill Form</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Structured Business Form -->
+        <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80">
+            <div class="mb-8">
+                <div class="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Step 2 of 3</div>
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Business Profile & Funding Details</h2>
+                <p class="text-slate-500 text-sm mt-1">Refine your business requirements before generating scheme recommendations.</p>
+            </div>
+
+            <form id="businessForm" onsubmit="handleBusinessSubmit(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Business / Project Name *</label>
+                        <input type="text" id="business_name" required placeholder="e.g. Annapurna Food Processing Unit"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Industry Sector *</label>
+                        <select id="industry" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                            <option value="Food Processing">Food Processing</option>
+                            <option value="Textiles & Apparel">Textiles & Apparel</option>
+                            <option value="Agriculture & Allied">Agriculture & Allied</option>
+                            <option value="Handicrafts & Artisans">Handicrafts & Artisans</option>
+                            <option value="IT & Tech Services">IT & Tech Services</option>
+                            <option value="Services">Services (General)</option>
+                            <option value="Manufacturing">Manufacturing (General)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Business Activity Type *</label>
+                        <select id="business_type" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Service">Service</option>
+                            <option value="Trading">Trading / Retail</option>
+                            <option value="Agri">Agri-Allied</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">New or Existing Business *</label>
+                        <select id="is_new_business" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                            <option value="true">New Business (Greenfield)</option>
+                            <option value="false">Existing Business Expansion</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Total Estimated Investment (₹) *</label>
+                        <input type="number" id="estimated_investment" required min="10000" placeholder="500000"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Funding / Loan Sought (₹) *</label>
+                        <input type="number" id="funding_required" required min="0" placeholder="500000"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Primary Purpose of Funding *</label>
+                        <input type="text" id="purpose_of_funding" required placeholder="e.g. Machinery Purchase & Working Capital"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Machinery Cost Requirement (₹)</label>
+                        <input type="number" id="machinery_cost" min="0" placeholder="350000"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Working Capital Requirement (₹)</label>
+                        <input type="number" id="working_capital_cost" min="0" placeholder="150000"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Number of Employees</label>
+                        <input type="number" id="employee_count" min="1" value="2"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Expected Annual Turnover (₹)</label>
+                        <input type="number" id="expected_turnover" min="0" placeholder="1200000"
+                               class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition">
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-slate-100">
+                    <a href="/profile.html" class="text-slate-500 hover:text-slate-800 text-sm font-semibold transition">
+                        ← Back to Personal Profile
+                    </a>
+
+                    <button type="submit" id="saveBtn"
+                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-10 py-4 rounded-2xl transition duration-200 shadow-xl shadow-blue-600/25 text-base flex items-center justify-center space-x-3">
+                        <span>Find My Schemes →</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- AI Analysis Processing Modal -->
+    <div id="aiAnalysisModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl border border-slate-100">
+            <div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto shadow-inner">
+                <svg class="animate-spin h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-extrabold text-slate-900">AI Scheme Engine</h3>
+                <p id="aiProgressText" class="text-sm font-semibold text-blue-600 mt-2 animate-pulse">1. Understanding your business...</p>
+            </div>
+
+            <div class="space-y-2 text-xs text-slate-400 text-left bg-slate-50 p-4 rounded-xl border border-slate-200/60 font-mono">
+                <div id="step-1" class="text-blue-600 font-bold">✓ 1. Understanding business requirement</div>
+                <div id="step-2" class="text-slate-300">○ 2. Analyzing entrepreneur profile</div>
+                <div id="step-3" class="text-slate-300">○ 3. Checking eligibility rules</div>
+                <div id="step-4" class="text-slate-300">○ 4. Matching government schemes</div>
+                <div id="step-5" class="text-slate-300">○ 5. Ranking best matches</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-6 text-center text-xs text-slate-400">
+        SIH 2026 Problem Statement SIH26092 — AI-Driven Scheme Matching
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!Auth.isLoggedIn()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/business', { headers: Auth.getHeaders() });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('business_name').value = data.business_name || '';
+                    document.getElementById('industry').value = data.industry || 'Food Processing';
+                    document.getElementById('business_type').value = data.business_type || 'Manufacturing';
+                    document.getElementById('is_new_business').value = data.is_new_business ? 'true' : 'false';
+                    document.getElementById('estimated_investment').value = data.estimated_investment || 500000;
+                    document.getElementById('funding_required').value = data.funding_required || 500000;
+                    document.getElementById('purpose_of_funding').value = data.purpose_of_funding || 'Machinery Purchase';
+                    document.getElementById('machinery_cost').value = data.machinery_cost || 350000;
+                    document.getElementById('working_capital_cost').value = data.working_capital_cost || 150000;
+                    document.getElementById('employee_count').value = data.employee_count || 2;
+                    document.getElementById('expected_turnover').value = data.expected_turnover || 1200000;
+                    if (data.raw_description) {
+                        document.getElementById('aiTextPrompt').value = data.raw_description;
+                    }
+                }
+            } catch (e) {}
+        });
+
+        function fillExamplePrompt() {
+            document.getElementById('aiTextPrompt').value = "I want to start a small food processing unit in Uttar Pradesh and need around ₹5 lakh for machinery.";
+        }
+
+        async function runAIAnalysis() {
+            const prompt = document.getElementById('aiTextPrompt').value;
+            if (!prompt || prompt.length < 5) {
+                showToast('Please enter a business description prompt first.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('aiExtractBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Analyzing...';
+
+            try {
+                const res = await fetch('/api/analyze-business', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: prompt })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Analysis failed');
+
+                if (data.extracted_industry) document.getElementById('industry').value = data.extracted_industry;
+                if (data.extracted_business_type) document.getElementById('business_type').value = data.extracted_business_type;
+                if (data.extracted_funding_needed > 0) {
+                    document.getElementById('funding_required').value = data.extracted_funding_needed;
+                    document.getElementById('estimated_investment').value = data.extracted_funding_needed;
+                    document.getElementById('machinery_cost').value = data.extracted_funding_needed * 0.7;
+                    document.getElementById('working_capital_cost').value = data.extracted_funding_needed * 0.3;
+                }
+                if (data.extracted_purpose) document.getElementById('purpose_of_funding').value = data.extracted_purpose;
+                if (!document.getElementById('business_name').value) {
+                    document.getElementById('business_name').value = `${data.extracted_industry} Unit`;
+                }
+
+                showToast('AI analysis complete! Business form auto-populated.', 'success');
+            } catch (err) {
+                showToast(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '⚡ Extract & Auto-Fill Form';
+            }
+        }
+
+        async function handleBusinessSubmit(e) {
+            e.preventDefault();
+            
+            // Get state & district from user profile or default
+            let state = 'Uttar Pradesh';
+            let district = 'Lucknow';
+            try {
+                const pRes = await fetch('/api/profile', { headers: Auth.getHeaders() });
+                if (pRes.ok) {
+                    const pData = await pRes.json();
+                    state = pData.state || state;
+                    district = pData.district || district;
+                }
+            } catch(e) {}
+
+            const payload = {
+                business_name: document.getElementById('business_name').value,
+                raw_description: document.getElementById('aiTextPrompt').value,
+                industry: document.getElementById('industry').value,
+                business_type: document.getElementById('business_type').value,
+                business_stage: 'Idea',
+                is_new_business: document.getElementById('is_new_business').value === 'true',
+                estimated_investment: parseFloat(document.getElementById('estimated_investment').value),
+                funding_required: parseFloat(document.getElementById('funding_required').value),
+                purpose_of_funding: document.getElementById('purpose_of_funding').value,
+                machinery_cost: parseFloat(document.getElementById('machinery_cost').value || 0),
+                working_capital_cost: parseFloat(document.getElementById('working_capital_cost').value || 0),
+                employee_count: parseInt(document.getElementById('employee_count').value || 1),
+                expected_turnover: parseFloat(document.getElementById('expected_turnover').value || 0),
+                business_location_state: state,
+                business_location_district: district,
+                is_rural: true
+            };
+
+            try {
+                const res = await fetch('/api/business', {
+                    method: 'PUT',
+                    headers: Auth.getHeaders(),
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.detail || 'Failed to save business details');
+                }
+
+                // Show AI Analysis Experience Modal
+                const modal = document.getElementById('aiAnalysisModal');
+                const progressText = document.getElementById('aiProgressText');
+                modal.classList.remove('hidden');
+
+                const stages = [
+                    { text: "1. Understanding your business...", stepId: "step-1" },
+                    { text: "2. Analyzing entrepreneur profile...", stepId: "step-2" },
+                    { text: "3. Checking eligibility...", stepId: "step-3" },
+                    { text: "4. Matching government schemes...", stepId: "step-4" },
+                    { text: "5. Ranking best matches...", stepId: "step-5" }
+                ];
+
+                for (let i = 0; i < stages.length; i++) {
+                    progressText.innerText = stages[i].text;
+                    const el = document.getElementById(stages[i].stepId);
+                    if (el) {
+                        el.className = "text-blue-600 font-bold";
+                        el.innerText = `✓ ${stages[i].text}`;
+                    }
+                    await new Promise(r => setTimeout(r, 250)); // Fast & meaningful 250ms per step
+                }
+
+                setTimeout(() => {
+                    window.location.href = '/recommendations.html';
+                }, 300);
+
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

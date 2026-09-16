@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheme Details - Entrepreneur Scheme Copilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/app.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
+    <nav class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="/" class="flex items-center space-x-2">
+                    <span class="text-blue-600 text-2xl font-bold">Copilot</span>
+                    <span class="text-gray-700 font-medium">for Entrepreneurs</span>
+                </a>
+                <div id="nav-auth"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-10">
+        <div class="mb-6">
+            <a href="/recommendations.html" class="text-blue-600 hover:underline text-sm font-semibold">← Back to Recommendations</a>
+        </div>
+
+        <div id="schemeDetailContainer" class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden p-8 space-y-8">
+            <div class="animate-pulse space-y-4">
+                <div class="h-8 bg-gray-200 rounded w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const schemeId = params.get('id');
+            if (!schemeId) {
+                window.location.href = '/recommendations.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/schemes/${schemeId}`);
+                if (!res.ok) throw new Error('Scheme not found');
+                const scheme = await res.json();
+                renderSchemeDetails(scheme);
+            } catch (err) {
+                document.getElementById('schemeDetailContainer').innerHTML = `
+                    <div class="text-red-600 font-bold">${err.message}</div>
+                `;
+            }
+        });
+
+        function renderSchemeDetails(scheme) {
+            const container = document.getElementById('schemeDetailContainer');
+            
+            const docsList = (scheme.required_documents || []).map(d => `<li class="flex items-center text-sm"><span class="text-blue-600 mr-2">📄</span> ${d}</li>`).join('');
+            
+            const processList = (scheme.application_process || []).map((step, i) => {
+                const title = typeof step === 'string' ? step : step.title;
+                const desc = typeof step === 'string' ? '' : step.desc;
+                return `
+                    <div class="flex space-x-4">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center">${i+1}</div>
+                        <div>
+                            <div class="font-semibold text-gray-900 text-sm">${title}</div>
+                            ${desc ? `<div class="text-xs text-gray-500 mt-0.5">${desc}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <!-- Top Header -->
+                <div class="border-b border-gray-100 pb-6 space-y-3">
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-800">${scheme.ministry}</span>
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">${scheme.category}</span>
+                        ${scheme.last_verified ? `<span class="text-xs font-medium text-gray-400 self-center">Verified: ${scheme.last_verified}</span>` : ''}
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-gray-900">${scheme.name}</h1>
+                    <p class="text-gray-600 text-base leading-relaxed">${scheme.description}</p>
+                </div>
+
+                <!-- Financial Benefits Card -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-blue-900 mb-2">Financial Assistance & Key Benefits</h3>
+                    <p class="text-blue-950 font-medium text-sm leading-relaxed">${scheme.benefits}</p>
+                    <div class="mt-4 pt-4 border-t border-blue-200/60 flex flex-wrap gap-6 text-xs text-blue-900">
+                        <div><span class="text-gray-500">Max Funding:</span> <strong>₹${scheme.funding_max ? scheme.funding_max.toLocaleString() : 'Variable'}</strong></div>
+                        <div><span class="text-gray-500">Target Beneficiaries:</span> <strong>${(scheme.target_beneficiaries || []).join(', ')}</strong></div>
+                    </div>
+                </div>
+
+                <!-- Eligibility Criteria -->
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-gray-900">Who Should Apply & Eligibility</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <div>• <strong>Age Range:</strong> ${scheme.minimum_age || 18} to ${scheme.maximum_age || 65} Years</div>
+                        <div>• <strong>Gender Focus:</strong> ${scheme.gender_requirements}</div>
+                        <div>• <strong>Social Category:</strong> ${(scheme.social_category_requirements || ['All']).join(', ')}</div>
+                        <div>• <strong>Area Jurisdiction:</strong> ${scheme.rural_urban_requirements}</div>
+                    </div>
+                </div>
+
+                <!-- Required Documents -->
+                <div class="space-y-3">
+                    <h3 class="text-lg font-bold text-gray-900">Mandatory Checklist of Documents</h3>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        ${docsList}
+                    </ul>
+                </div>
+
+                <!-- Application Process -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-gray-900">Step-by-Step Application Process</h3>
+                    <div class="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        ${processList}
+                    </div>
+                </div>
+
+                <!-- Official URL & Action Buttons -->
+                <div class="pt-6 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <a href="/roadmap.html?scheme_id=${scheme.id}" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition text-center shadow-md">
+                        Open Application Roadmap →
+                    </a>
+                    
+                    <a href="${scheme.official_url}" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-xl transition text-center shadow-md flex items-center justify-center space-x-2">
+                        <span>Apply on Official Portal</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                </div>
+
+                <!-- Mandatory Disclaimer -->
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-center text-xs text-amber-800">
+                    ⚠️ <strong>Official Source Disclaimer:</strong> Verify latest guidelines, notifications and updates on the official government portal (${scheme.official_url}) before submitting your application.
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

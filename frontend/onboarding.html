@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrepreneur Onboarding - Scheme Copilot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/app.js"></script>
+    <style>
+        .step-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-slate-200/80 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
+                        ⚡
+                    </div>
+                    <span class="text-slate-900 text-lg font-extrabold tracking-tight">Entrepreneur Scheme Copilot</span>
+                </a>
+                <div id="nav-auth"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Indicator Header -->
+    <div class="bg-white border-b border-slate-200 py-4 shadow-inner sticky top-16 z-20">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex justify-between items-center text-xs sm:text-sm">
+                <!-- Step 1 Indicator -->
+                <button type="button" onclick="goToStep(1)" id="indicator-step-1" class="flex items-center text-blue-600 font-bold space-x-2 outline-none">
+                    <span id="badge-step-1" class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-500/30">1</span>
+                    <span class="hidden sm:inline">Profile</span>
+                </button>
+
+                <div id="line-step-1" class="h-0.5 bg-slate-200 flex-1 mx-2 sm:mx-4 transition-colors"></div>
+
+                <!-- Step 2 Indicator -->
+                <button type="button" onclick="goToStep(2)" id="indicator-step-2" class="flex items-center text-slate-400 font-medium space-x-2 outline-none">
+                    <span id="badge-step-2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">2</span>
+                    <span class="hidden sm:inline">Business</span>
+                </button>
+
+                <div id="line-step-2" class="h-0.5 bg-slate-200 flex-1 mx-2 sm:mx-4 transition-colors"></div>
+
+                <!-- Step 3 Indicator -->
+                <button type="button" onclick="goToStep(3)" id="indicator-step-3" class="flex items-center text-slate-400 font-medium space-x-2 outline-none">
+                    <span id="badge-step-3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">3</span>
+                    <span class="hidden sm:inline">Requirements</span>
+                </button>
+
+                <div id="line-step-3" class="h-0.5 bg-slate-200 flex-1 mx-2 sm:mx-4 transition-colors"></div>
+
+                <!-- Step 4 Indicator -->
+                <button type="button" onclick="goToStep(4)" id="indicator-step-4" class="flex items-center text-slate-400 font-medium space-x-2 outline-none">
+                    <span id="badge-step-4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs">4</span>
+                    <span class="hidden sm:inline">Review</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-8 w-full my-auto">
+        <!-- ========================================== -->
+        <!-- STEP 1: ENTREPRENEUR PROFILE -->
+        <!-- ========================================== -->
+        <div id="step-panel-1" class="step-panel space-y-6">
+            <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80">
+                <div class="mb-8">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 1 of 4</span>
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Entrepreneur Profile</h1>
+                    <p class="text-slate-500 text-sm mt-1">Personal demographics used to evaluate scheme eligibility rules.</p>
+                </div>
+
+                <form onsubmit="handleStep1Submit(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Full Name *</label>
+                            <input type="text" id="full_name" required placeholder="e.g. Ramesh Kumar"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Age (Years) *</label>
+                            <input type="number" id="age" required min="18" max="90" placeholder="28"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Gender *</label>
+                            <select id="gender" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Social Category *</label>
+                            <select id="social_category" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="General">General</option>
+                                <option value="OBC">OBC (Other Backward Class)</option>
+                                <option value="SC">SC (Scheduled Caste)</option>
+                                <option value="ST">ST (Scheduled Tribe)</option>
+                                <option value="EWS">EWS (Economically Weaker Section)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">State *</label>
+                            <input type="text" id="state" required placeholder="e.g. Uttar Pradesh"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">District *</label>
+                            <input type="text" id="district" required placeholder="e.g. Lucknow"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Rural or Urban *</label>
+                            <select id="rural_urban" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="Rural">Rural Area</option>
+                                <option value="Urban">Urban Area</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Entrepreneur Status *</label>
+                            <select id="entrepreneur_type" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="New">New Entrepreneur</option>
+                                <option value="Existing">Existing Entrepreneur</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <input type="checkbox" id="disability_status" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                        <label for="disability_status" class="text-sm font-medium text-slate-700 cursor-pointer">
+                            Specially-Abled / Person with Disability (Divyangjan)
+                        </label>
+                    </div>
+
+                    <div class="pt-6 flex justify-end">
+                        <button type="submit" id="btn-step-1"
+                                class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-8 py-3.5 rounded-xl transition shadow-lg text-sm flex items-center space-x-2">
+                            <span>Save & Next: Business Profile →</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STEP 2: BUSINESS PROFILE -->
+        <!-- ========================================== -->
+        <div id="step-panel-2" class="step-panel space-y-6 hidden">
+            <!-- AI Box -->
+            <div class="bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="px-3 py-1 bg-blue-500/30 text-blue-200 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-400/30">AI Requirement Parser</span>
+                    <button type="button" onclick="fillPromptExample()" class="text-xs text-indigo-300 hover:underline">✨ Use Example</button>
+                </div>
+                <h3 class="text-xl font-bold">Describe Your Business in Plain Language</h3>
+                <textarea id="raw_description" rows="2"
+                          placeholder="Example: I want to start a small food processing unit in Uttar Pradesh and need ₹5 lakh for machinery."
+                          class="w-full px-4 py-3 rounded-2xl bg-white/10 text-white placeholder-indigo-300 border border-white/20 text-sm outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                <button type="button" onclick="runAIExtract()" id="aiExtractBtn" class="bg-blue-500 hover:bg-blue-400 text-white font-bold px-5 py-2 rounded-xl text-xs uppercase tracking-wider">
+                    ⚡ Auto-Fill Fields via AI
+                </button>
+            </div>
+
+            <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80">
+                <div class="mb-8">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 2 of 4</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Business Profile</h2>
+                    <p class="text-slate-500 text-sm mt-1">Specify your project parameters & capital requirements.</p>
+                </div>
+
+                <form onsubmit="handleStep2Submit(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Business Name *</label>
+                            <input type="text" id="business_name" required placeholder="e.g. Annapurna Food Products"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Industry Sector *</label>
+                            <select id="industry" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="Food Processing">Food Processing</option>
+                                <option value="Textiles & Apparel">Textiles & Apparel</option>
+                                <option value="Agriculture & Allied">Agriculture & Allied</option>
+                                <option value="Handicrafts & Artisans">Handicrafts & Artisans</option>
+                                <option value="IT & Tech Services">IT & Tech Services</option>
+                                <option value="Services">Services (General)</option>
+                                <option value="Manufacturing">Manufacturing (General)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Business Type *</label>
+                            <select id="business_type" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Service">Service</option>
+                                <option value="Trading">Trading / Retail</option>
+                                <option value="Agri">Agri-Allied</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Business Stage *</label>
+                            <select id="business_stage" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <option value="Idea">Idea / Setup Stage</option>
+                                <option value="Early">Early Stage (&lt;2 Years)</option>
+                                <option value="Growth">Growth Stage (Established)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Estimated Investment (₹) *</label>
+                            <input type="number" id="estimated_investment" required min="10000" placeholder="500000"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Funding Required (₹) *</label>
+                            <input type="number" id="funding_required" required min="0" placeholder="500000"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Funding Purpose *</label>
+                            <input type="text" id="purpose_of_funding" required placeholder="Machinery Purchase & Working Capital"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Machinery Requirement (₹)</label>
+                            <input type="number" id="machinery_cost" min="0" placeholder="350000"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Working Capital Requirement (₹)</label>
+                            <input type="number" id="working_capital_cost" min="0" placeholder="150000"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Number of Employees</label>
+                            <input type="number" id="employee_count" min="1" value="2"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Expected Annual Turnover (₹)</label>
+                            <input type="number" id="expected_turnover" min="0" placeholder="1200000"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <div class="pt-6 flex justify-between items-center">
+                        <button type="button" onclick="goToStep(1)" class="text-slate-500 hover:text-slate-800 text-sm font-semibold">← Back</button>
+                        <button type="submit" id="btn-step-2"
+                                class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-8 py-3.5 rounded-xl transition shadow-lg text-sm">
+                            Save & Next: Support Requirements →
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STEP 3: BUSINESS REQUIREMENTS -->
+        <!-- ========================================== -->
+        <div id="step-panel-3" class="step-panel space-y-6 hidden">
+            <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80">
+                <div class="mb-8">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 3 of 4</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">What Support Are You Looking For?</h2>
+                    <p class="text-slate-500 text-sm mt-1">Select all types of government support relevant to your business needs.</p>
+                </div>
+
+                <form onsubmit="handleStep3Submit(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Support Types (Select All That Apply) *</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Loan" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Bank Loan</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Subsidy" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Capital Subsidy</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Grant" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Government Grant</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Machinery / Equipment" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Machinery / Equipment</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Working Capital" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Working Capital</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Training / Skill Development" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Training & Skill Setup</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Market Linkage" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Market Linkage</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Mentorship" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Mentorship</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition">
+                                <input type="checkbox" name="support_needed" value="Other" class="w-4 h-4 text-blue-600 rounded">
+                                <span class="text-sm font-semibold text-slate-800">Other Support</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Specific Support Requirement Notes</label>
+                        <textarea id="support_notes" rows="3" placeholder="Specify any additional requirements e.g. need loan collateral guarantee or FSSAI registration guidance..."
+                                  class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-sm"></textarea>
+                    </div>
+
+                    <div class="pt-6 flex justify-between items-center">
+                        <button type="button" onclick="goToStep(2)" class="text-slate-500 hover:text-slate-800 text-sm font-semibold">← Back</button>
+                        <button type="submit" id="btn-step-3"
+                                class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-8 py-3.5 rounded-xl transition shadow-lg text-sm">
+                            Save & Proceed to Review →
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- STEP 4: REVIEW INFORMATION -->
+        <!-- ========================================== -->
+        <div id="step-panel-4" class="step-panel space-y-6 hidden">
+            <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200/80 space-y-8">
+                <div>
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Step 4 of 4</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Review Your Information</h2>
+                    <p class="text-slate-500 text-sm mt-1">Confirm your submitted profile before matching schemes.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Personal Profile Review -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Personal Profile</h3>
+                            <button type="button" onclick="goToStep(1)" class="text-xs text-blue-600 font-bold hover:underline">Edit</button>
+                        </div>
+                        <div class="text-xs space-y-1.5 text-slate-700">
+                            <div><span class="text-slate-400">Name:</span> <strong id="rev-name">-</strong></div>
+                            <div><span class="text-slate-400">Age:</span> <strong id="rev-age">-</strong> Yrs | <strong id="rev-gender">-</strong></div>
+                            <div><span class="text-slate-400">Category:</span> <strong id="rev-category">-</strong></div>
+                            <div><span class="text-slate-400">Location:</span> <strong id="rev-location">-</strong> (<strong id="rev-area">-</strong>)</div>
+                            <div><span class="text-slate-400">Status:</span> <strong id="rev-status">-</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Business Profile Review -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Business Profile</h3>
+                            <button type="button" onclick="goToStep(2)" class="text-xs text-blue-600 font-bold hover:underline">Edit</button>
+                        </div>
+                        <div class="text-xs space-y-1.5 text-slate-700">
+                            <div><span class="text-slate-400">Business Name:</span> <strong id="rev-bizname">-</strong></div>
+                            <div><span class="text-slate-400">Industry:</span> <strong id="rev-industry">-</strong></div>
+                            <div><span class="text-slate-400">Activity Type:</span> <strong id="rev-type">-</strong></div>
+                            <div><span class="text-slate-400">Stage:</span> <strong id="rev-stage">-</strong></div>
+                            <div><span class="text-slate-400">Employees:</span> <strong id="rev-employees">-</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Funding Requirement Review -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Funding Requirement</h3>
+                            <button type="button" onclick="goToStep(2)" class="text-xs text-blue-600 font-bold hover:underline">Edit</button>
+                        </div>
+                        <div class="text-xs space-y-1.5 text-slate-700">
+                            <div><span class="text-slate-400">Total Investment:</span> <strong id="rev-investment">-</strong></div>
+                            <div><span class="text-slate-400">Funding Sought:</span> <strong id="rev-funding">-</strong></div>
+                            <div><span class="text-slate-400">Machinery Cost:</span> <strong id="rev-machinery">-</strong></div>
+                            <div><span class="text-slate-400">Working Capital:</span> <strong id="rev-workingcap">-</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Support Needed Review -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200/80 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Support Needed</h3>
+                            <button type="button" onclick="goToStep(3)" class="text-xs text-blue-600 font-bold hover:underline">Edit</button>
+                        </div>
+                        <div class="text-xs space-y-1.5 text-slate-700">
+                            <div><span class="text-slate-400">Support Types:</span> <strong id="rev-supportlist">-</strong></div>
+                            <div><span class="text-slate-400">Notes:</span> <span id="rev-supportnotes" class="italic">-</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Action Button -->
+                <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <button type="button" onclick="goToStep(3)" class="text-slate-500 hover:text-slate-800 text-sm font-semibold">← Back to Requirements</button>
+                    <button type="button" onclick="executeFindMySchemes()" id="btn-find-schemes"
+                            class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black px-10 py-4 rounded-2xl text-base shadow-xl shadow-blue-600/25 flex items-center justify-center space-x-3">
+                        <span>Find My Schemes →</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-slate-400">
+        Entrepreneur Scheme Copilot — AI-Driven Scheme Matching Platform
+    </footer>
+
+    <script>
+        let currentStep = 1;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!Auth.isLoggedIn()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Load existing data from DB
+            await loadExistingData();
+        });
+
+        async function loadExistingData() {
+            try {
+                const pRes = await fetch('/api/profile', { headers: Auth.getHeaders() });
+                if (pRes.ok) {
+                    const p = await pRes.json();
+                    document.getElementById('full_name').value = p.full_name || '';
+                    document.getElementById('age').value = p.age || '';
+                    document.getElementById('gender').value = p.gender || 'Male';
+                    document.getElementById('social_category').value = p.social_category || 'General';
+                    document.getElementById('state').value = p.state || '';
+                    document.getElementById('district').value = p.district || '';
+                    document.getElementById('rural_urban').value = p.rural_urban || 'Rural';
+                    document.getElementById('entrepreneur_type').value = p.entrepreneur_type || 'New';
+                    document.getElementById('disability_status').checked = p.disability_status || false;
+                }
+            } catch(e) {}
+
+            try {
+                const bRes = await fetch('/api/business', { headers: Auth.getHeaders() });
+                if (bRes.ok) {
+                    const b = await bRes.json();
+                    document.getElementById('business_name').value = b.business_name || '';
+                    document.getElementById('raw_description').value = b.raw_description || '';
+                    document.getElementById('industry').value = b.industry || 'Food Processing';
+                    document.getElementById('business_type').value = b.business_type || 'Manufacturing';
+                    document.getElementById('business_stage').value = b.business_stage || 'Idea';
+                    document.getElementById('estimated_investment').value = b.estimated_investment || 500000;
+                    document.getElementById('funding_required').value = b.funding_required || 500000;
+                    document.getElementById('purpose_of_funding').value = b.purpose_of_funding || 'Machinery Purchase';
+                    document.getElementById('machinery_cost').value = b.machinery_cost || 350000;
+                    document.getElementById('working_capital_cost').value = b.working_capital_cost || 150000;
+                    document.getElementById('employee_count').value = b.employee_count || 2;
+                    document.getElementById('expected_turnover').value = b.expected_turnover || 1200000;
+                    document.getElementById('support_notes').value = b.support_notes || '';
+
+                    const checkedSupports = b.support_needed || ["Loan", "Subsidy", "Machinery / Equipment"];
+                    document.querySelectorAll('input[name="support_needed"]').forEach(cb => {
+                        cb.checked = checkedSupports.includes(cb.value);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        function goToStep(step) {
+            currentStep = step;
+            for (let i = 1; i <= 4; i++) {
+                const panel = document.getElementById(`step-panel-${i}`);
+                const badge = document.getElementById(`badge-step-${i}`);
+                const line = document.getElementById(`line-step-${i}`);
+                const text = document.getElementById(`indicator-step-${i}`);
+
+                if (i === step) {
+                    panel.classList.remove('hidden');
+                    badge.className = "w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-blue-500/30";
+                    text.className = "flex items-center text-blue-600 font-bold space-x-2 outline-none";
+                } else if (i < step) {
+                    panel.classList.add('hidden');
+                    badge.className = "w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs";
+                    badge.innerText = "✓";
+                    text.className = "flex items-center text-emerald-600 font-bold space-x-2 outline-none";
+                    if (line) line.className = "h-0.5 bg-emerald-500 flex-1 mx-2 sm:mx-4 transition-colors";
+                } else {
+                    panel.classList.add('hidden');
+                    badge.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold text-xs";
+                    badge.innerText = i;
+                    text.className = "flex items-center text-slate-400 font-medium space-x-2 outline-none";
+                    if (line) line.className = "h-0.5 bg-slate-200 flex-1 mx-2 sm:mx-4 transition-colors";
+                }
+            }
+
+            if (step === 4) {
+                populateReviewPage();
+            }
+        }
+
+        async function handleStep1Submit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-step-1');
+            btn.disabled = true;
+            btn.innerHTML = 'Saving Profile...';
+
+            const payload = {
+                full_name: document.getElementById('full_name').value,
+                age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                social_category: document.getElementById('social_category').value,
+                state: document.getElementById('state').value,
+                district: document.getElementById('district').value,
+                rural_urban: document.getElementById('rural_urban').value,
+                entrepreneur_type: document.getElementById('entrepreneur_type').value,
+                disability_status: document.getElementById('disability_status').checked,
+                business_stage: 'Idea'
+            };
+
+            try {
+                const res = await fetch('/api/profile', {
+                    method: 'PUT',
+                    headers: Auth.getHeaders(),
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || 'Failed to save profile');
+                }
+                showToast('Personal profile saved to database!', 'success');
+                btn.disabled = false;
+                btn.innerHTML = 'Save & Next: Business Profile →';
+                goToStep(2);
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Save & Next: Business Profile →';
+            }
+        }
+
+        function fillPromptExample() {
+            document.getElementById('raw_description').value = "I want to start a small food processing unit in Uttar Pradesh and need ₹5 lakh for machinery.";
+        }
+
+        async function runAIExtract() {
+            const prompt = document.getElementById('raw_description').value;
+            if (!prompt || prompt.length < 5) {
+                showToast('Please enter a business description first.', 'error');
+                return;
+            }
+            try {
+                const res = await fetch('/api/analyze-business', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: prompt })
+                });
+                const data = await res.json();
+                if (data.extracted_industry) document.getElementById('industry').value = data.extracted_industry;
+                if (data.extracted_business_type) document.getElementById('business_type').value = data.extracted_business_type;
+                if (data.extracted_funding_needed > 0) {
+                    document.getElementById('funding_required').value = data.extracted_funding_needed;
+                    document.getElementById('estimated_investment').value = data.extracted_funding_needed;
+                    document.getElementById('machinery_cost').value = data.extracted_funding_needed * 0.7;
+                    document.getElementById('working_capital_cost').value = data.extracted_funding_needed * 0.3;
+                }
+                if (data.extracted_purpose) document.getElementById('purpose_of_funding').value = data.extracted_purpose;
+                if (!document.getElementById('business_name').value) {
+                    document.getElementById('business_name').value = `${data.extracted_industry} Unit`;
+                }
+                showToast('AI analysis completed! Form auto-populated.', 'success');
+            } catch (err) {
+                showToast('AI parsing failed', 'error');
+            }
+        }
+
+        async function saveBusinessToDB() {
+            const state = document.getElementById('state').value || 'Uttar Pradesh';
+            const district = document.getElementById('district').value || 'Lucknow';
+
+            const selectedSupports = Array.from(document.querySelectorAll('input[name="support_needed"]:checked')).map(cb => cb.value);
+
+            const payload = {
+                business_name: document.getElementById('business_name').value,
+                raw_description: document.getElementById('raw_description').value,
+                industry: document.getElementById('industry').value,
+                business_type: document.getElementById('business_type').value,
+                business_stage: document.getElementById('business_stage').value,
+                is_new_business: true,
+                estimated_investment: parseFloat(document.getElementById('estimated_investment').value),
+                funding_required: parseFloat(document.getElementById('funding_required').value),
+                purpose_of_funding: document.getElementById('purpose_of_funding').value,
+                machinery_cost: parseFloat(document.getElementById('machinery_cost').value || 0),
+                working_capital_cost: parseFloat(document.getElementById('working_capital_cost').value || 0),
+                employee_count: parseInt(document.getElementById('employee_count').value || 1),
+                expected_turnover: parseFloat(document.getElementById('expected_turnover').value || 0),
+                business_location_state: state,
+                business_location_district: district,
+                is_rural: document.getElementById('rural_urban').value === 'Rural',
+                support_needed: selectedSupports,
+                support_notes: document.getElementById('support_notes').value
+            };
+
+            const res = await fetch('/api/business', {
+                method: 'PUT',
+                headers: Auth.getHeaders(),
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || 'Failed to save business details');
+            }
+
+            return res.json();
+        }
+
+        async function handleStep2Submit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-step-2');
+            btn.disabled = true;
+            btn.innerHTML = 'Saving Business Details...';
+
+            try {
+                await saveBusinessToDB();
+                showToast('Business profile saved to database!', 'success');
+                btn.disabled = false;
+                btn.innerHTML = 'Save & Next: Support Requirements →';
+                goToStep(3);
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Save & Next: Support Requirements →';
+            }
+        }
+
+        async function handleStep3Submit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-step-3');
+            
+            const selectedSupports = Array.from(document.querySelectorAll('input[name="support_needed"]:checked')).map(cb => cb.value);
+            if (selectedSupports.length === 0) {
+                showToast('Please select at least one type of support needed.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Saving Requirements...';
+
+            try {
+                await saveBusinessToDB();
+                showToast('Support requirements saved to database!', 'success');
+                btn.disabled = false;
+                btn.innerHTML = 'Save & Proceed to Review →';
+                goToStep(4);
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Save & Proceed to Review →';
+            }
+        }
+
+        function populateReviewPage() {
+            document.getElementById('rev-name').innerText = document.getElementById('full_name').value || '-';
+            document.getElementById('rev-age').innerText = document.getElementById('age').value || '-';
+            document.getElementById('rev-gender').innerText = document.getElementById('gender').value || '-';
+            document.getElementById('rev-category').innerText = document.getElementById('social_category').value || '-';
+            document.getElementById('rev-location').innerText = `${document.getElementById('district').value}, ${document.getElementById('state').value}`;
+            document.getElementById('rev-area').innerText = document.getElementById('rural_urban').value || '-';
+            document.getElementById('rev-status').innerText = document.getElementById('entrepreneur_type').value || '-';
+
+            document.getElementById('rev-bizname').innerText = document.getElementById('business_name').value || '-';
+            document.getElementById('rev-industry').innerText = document.getElementById('industry').value || '-';
+            document.getElementById('rev-type').innerText = document.getElementById('business_type').value || '-';
+            document.getElementById('rev-stage').innerText = document.getElementById('business_stage').value || '-';
+            document.getElementById('rev-employees').innerText = document.getElementById('employee_count').value || '-';
+
+            const invest = parseFloat(document.getElementById('estimated_investment').value || 0);
+            const fund = parseFloat(document.getElementById('funding_required').value || 0);
+            const mach = parseFloat(document.getElementById('machinery_cost').value || 0);
+            const work = parseFloat(document.getElementById('working_capital_cost').value || 0);
+
+            document.getElementById('rev-investment').innerText = `₹${invest.toLocaleString()}`;
+            document.getElementById('rev-funding').innerText = `₹${fund.toLocaleString()}`;
+            document.getElementById('rev-machinery').innerText = `₹${mach.toLocaleString()}`;
+            document.getElementById('rev-workingcap').innerText = `₹${work.toLocaleString()}`;
+
+            const selectedSupports = Array.from(document.querySelectorAll('input[name="support_needed"]:checked')).map(cb => cb.value);
+            document.getElementById('rev-supportlist').innerText = selectedSupports.join(', ') || 'None selected';
+            document.getElementById('rev-supportnotes').innerText = document.getElementById('support_notes').value || 'None';
+        }
+
+        async function executeFindMySchemes() {
+            const btn = document.getElementById('btn-find-schemes');
+            btn.disabled = true;
+            btn.innerHTML = 'Running 5-Factor Scheme Engine...';
+
+            try {
+                // Final save to DB
+                await saveBusinessToDB();
+
+                showToast('Matching government schemes for your profile...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = '/recommendations.html';
+                }, 400);
+            } catch (err) {
+                showToast(err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Find My Schemes →';
+            }
+        }
+    </script>
+</body>
+</html>
