@@ -9,4 +9,5 @@ python-jose[cryptography]==3.3.0
 google-generativeai==0.8.4
 psycopg2-binary==2.9.10
 pytest==8.3.4
-requests==2.32.3
+requests==2.32.3 
+email-validator
