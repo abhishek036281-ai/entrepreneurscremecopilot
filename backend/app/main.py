@@ -43,12 +43,7 @@ app.include_router(admin.router)
 def health_check():
     return {"status": "ok", "message": "Entrepreneur Scheme Copilot API is fully operational"}
 
-frontend_dir = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        "../../frontend"
-    )
-)
+frontend_dir = "/app/frontend"
 
 if os.path.exists(frontend_dir):
     app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
