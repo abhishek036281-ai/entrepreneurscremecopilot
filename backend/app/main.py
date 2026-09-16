@@ -45,5 +45,9 @@ def health_check():
 
 frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
 
-if os.path.exists(frontend_dir):
-    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+    @app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "message": "Entrepreneur Scheme Copilot API is running"
+    }
